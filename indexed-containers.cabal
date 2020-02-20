@@ -4,7 +4,7 @@ cabal-version:       2.4
 -- http://haskell.org/cabal/users-guide/
 
 name:                indexed-containers
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Simple, no-frills indexed lists.
 description:         If the lengths of your lists are known statically, using indexed lists improves type safety with no runtime overhead.
 category:            Data Structures

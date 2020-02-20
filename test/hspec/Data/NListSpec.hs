@@ -45,6 +45,8 @@ spec = do
       initMay (empty :: NList 0 ()) === Nothing
       initMay (singleton 'a') === Just empty
       initMay (mk3 'a' 'b' 'c') === Just (mk2 'a' 'b')
+      uncons (singleton 'a') === ('a', empty)
+      uncons (mk3 'a' 'b' 'c') === ('a', mk2 'b' 'c')
       take @0 (mk3 'a' 'b' 'c') === empty
       take @2 (mk3 'a' 'b' 'c') === mk2 'a' 'b'
       take @3 (mk3 'a' 'b' 'c') === mk3 'a' 'b' 'c'
@@ -80,3 +82,21 @@ spec = do
       toList (mk8 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h') === "abcdefgh"
       toList (mk9 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i') === "abcdefghi"
       toList (mk10 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i' 'j') === "abcdefghij"
+      fromTuple ('a', 'b') === mk2 'a' 'b'
+      fromTuple ('a', 'b', 'c') === mk3 'a' 'b' 'c'
+      fromTuple ('a', 'b', 'c', 'd') === mk4 'a' 'b' 'c' 'd'
+      fromTuple ('a', 'b', 'c', 'd', 'e') === mk5 'a' 'b' 'c' 'd' 'e'
+      fromTuple ('a', 'b', 'c', 'd', 'e', 'f') === mk6 'a' 'b' 'c' 'd' 'e' 'f'
+      fromTuple ('a', 'b', 'c', 'd', 'e', 'f', 'g') === mk7 'a' 'b' 'c' 'd' 'e' 'f' 'g'
+      fromTuple ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h') === mk8 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h'
+      fromTuple ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i') === mk9 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i'
+      fromTuple ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j') === mk10 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i' 'j'
+      toTuple (mk2 'a' 'b') === ('a', 'b')
+      toTuple (mk3 'a' 'b' 'c') === ('a', 'b', 'c')
+      toTuple (mk4 'a' 'b' 'c' 'd') === ('a', 'b', 'c', 'd')
+      toTuple (mk5 'a' 'b' 'c' 'd' 'e') === ('a', 'b', 'c', 'd', 'e')
+      toTuple (mk6 'a' 'b' 'c' 'd' 'e' 'f') === ('a', 'b', 'c', 'd', 'e', 'f')
+      toTuple (mk7 'a' 'b' 'c' 'd' 'e' 'f' 'g') === ('a', 'b', 'c', 'd', 'e', 'f', 'g')
+      toTuple (mk8 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h') === ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
+      toTuple (mk9 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i') === ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i')
+      toTuple (mk10 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i' 'j') === ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')

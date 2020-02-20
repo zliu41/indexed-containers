@@ -1,6 +1,7 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
@@ -9,6 +10,8 @@
 #if __GLASGOW_HASKELL__ >= 806
 {-# LANGUAGE NoStarIsType #-}
 #endif
+
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
 
 -----------------------------------------------------------------------------
 -- |
@@ -40,6 +43,7 @@ module Data.NList
   , init
   , init'
   , initMay
+  , uncons
   , toList
 
   -- * Extracing sublists
@@ -80,6 +84,10 @@ module Data.NList
   , mk8
   , mk9
   , mk10
+
+  -- * To and from tuples
+  , FromTuple(..)
+  , ToTuple(..)
 
   -- * Predecessor of a Nat
   , Pred
@@ -209,6 +217,13 @@ init' (List xs) = List (List.init xs)
 initMay :: NList n a -> Maybe (NList (Pred n) a)
 initMay (List []) = Nothing
 initMay (List xs) = Just $ List (List.init xs)
+
+-- | Decompose a list into head and tail.
+--
+-- > uncons (singleton 'a') === ('a', empty)
+-- > uncons (mk3 'a' 'b' 'c') === ('a', mk2 'b' 'c')
+uncons :: (1 <= n) => NList n a -> (a, NList (n-1) a)
+uncons (List (x:xs)) = (x, List xs)
 
 -- | Return the first @k@ elements of a list whose length is at least @k@.
 --
@@ -377,6 +392,108 @@ mk9 a1 a2 a3 a4 a5 a6 a7 a8 a9 = List [a1, a2, a3, a4, a5, a6, a7, a8, a9]
 -- > toList (mk10 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i' 'j') === "abcdefghij"
 mk10 :: a -> a -> a -> a -> a -> a -> a -> a -> a -> a -> NList 10 a
 mk10 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10 = List [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10]
+
+
+-- | Typeclass for converting tuples to 'NList's.
+class FromTuple a where
+  type List a
+  fromTuple :: a -> List a
+
+instance FromTuple (a, a) where
+  type List (a, a) = NList 2 a
+  -- > fromTuple ('a', 'b') === mk2 'a' 'b'
+  fromTuple (a1, a2) = mk2 a1 a2
+
+instance FromTuple (a, a, a) where
+  type List (a, a, a) = NList 3 a
+  -- > fromTuple ('a', 'b', 'c') === mk3 'a' 'b' 'c'
+  fromTuple (a1, a2, a3) = mk3 a1 a2 a3
+
+instance FromTuple (a, a, a, a) where
+  type List (a, a, a, a) = NList 4 a
+  -- > fromTuple ('a', 'b', 'c', 'd') === mk4 'a' 'b' 'c' 'd'
+  fromTuple (a1, a2, a3, a4) = mk4 a1 a2 a3 a4
+
+instance FromTuple (a, a, a, a, a) where
+  type List (a, a, a, a, a) = NList 5 a
+  -- > fromTuple ('a', 'b', 'c', 'd', 'e') === mk5 'a' 'b' 'c' 'd' 'e'
+  fromTuple (a1, a2, a3, a4, a5) = mk5 a1 a2 a3 a4 a5
+
+instance FromTuple (a, a, a, a, a, a) where
+  type List (a, a, a, a, a, a) = NList 6 a
+  -- > fromTuple ('a', 'b', 'c', 'd', 'e', 'f') === mk6 'a' 'b' 'c' 'd' 'e' 'f'
+  fromTuple (a1, a2, a3, a4, a5, a6) = mk6 a1 a2 a3 a4 a5 a6
+
+instance FromTuple (a, a, a, a, a, a, a) where
+  type List (a, a, a, a, a, a, a) = NList 7 a
+  -- > fromTuple ('a', 'b', 'c', 'd', 'e', 'f', 'g') === mk7 'a' 'b' 'c' 'd' 'e' 'f' 'g'
+  fromTuple (a1, a2, a3, a4, a5, a6, a7) = mk7 a1 a2 a3 a4 a5 a6 a7
+
+instance FromTuple (a, a, a, a, a, a, a, a) where
+  type List (a, a, a, a, a, a, a, a) = NList 8 a
+  -- > fromTuple ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h') === mk8 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h'
+  fromTuple (a1, a2, a3, a4, a5, a6, a7, a8) = mk8 a1 a2 a3 a4 a5 a6 a7 a8
+
+instance FromTuple (a, a, a, a, a, a, a, a, a) where
+  type List (a, a, a, a, a, a, a, a, a) = NList 9 a
+  -- > fromTuple ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i') === mk9 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i'
+  fromTuple (a1, a2, a3, a4, a5, a6, a7, a8, a9) = mk9 a1 a2 a3 a4 a5 a6 a7 a8 a9
+
+instance FromTuple (a, a, a, a, a, a, a, a, a, a) where
+  type List (a, a, a, a, a, a, a, a, a, a) = NList 10 a
+  -- > fromTuple ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j') === mk10 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i' 'j'
+  fromTuple (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) = mk10 a1 a2 a3 a4 a5 a6 a7 a8 a9 a10
+
+
+-- | Typeclass for converting 'NList's to tuples.
+class ToTuple a where
+  type Tuple a
+  toTuple :: a -> Tuple a
+
+instance ToTuple (NList 2 a) where
+  type Tuple (NList 2 a) = (a, a)
+  -- > toTuple (mk2 'a' 'b') === ('a', 'b')
+  toTuple (List [a1, a2]) = (a1, a2)
+
+instance ToTuple (NList 3 a) where
+  type Tuple (NList 3 a) = (a, a, a)
+  -- > toTuple (mk3 'a' 'b' 'c') === ('a', 'b', 'c')
+  toTuple (List [a1, a2, a3]) = (a1, a2, a3)
+
+instance ToTuple (NList 4 a) where
+  type Tuple (NList 4 a) = (a, a, a, a)
+  -- > toTuple (mk4 'a' 'b' 'c' 'd') === ('a', 'b', 'c', 'd')
+  toTuple (List [a1, a2, a3, a4]) = (a1, a2, a3, a4)
+
+instance ToTuple (NList 5 a) where
+  type Tuple (NList 5 a) = (a, a, a, a, a)
+  -- > toTuple (mk5 'a' 'b' 'c' 'd' 'e') === ('a', 'b', 'c', 'd', 'e')
+  toTuple (List [a1, a2, a3, a4, a5]) = (a1, a2, a3, a4, a5)
+
+instance ToTuple (NList 6 a) where
+  type Tuple (NList 6 a) = (a, a, a, a, a, a)
+  -- > toTuple (mk6 'a' 'b' 'c' 'd' 'e' 'f') === ('a', 'b', 'c', 'd', 'e', 'f')
+  toTuple (List [a1, a2, a3, a4, a5, a6]) = (a1, a2, a3, a4, a5, a6)
+
+instance ToTuple (NList 7 a) where
+  type Tuple (NList 7 a) = (a, a, a, a, a, a, a)
+  -- > toTuple (mk7 'a' 'b' 'c' 'd' 'e' 'f' 'g') === ('a', 'b', 'c', 'd', 'e', 'f', 'g')
+  toTuple (List [a1, a2, a3, a4, a5, a6, a7]) = (a1, a2, a3, a4, a5, a6, a7)
+
+instance ToTuple (NList 8 a) where
+  type Tuple (NList 8 a) = (a, a, a, a, a, a, a, a)
+  -- > toTuple (mk8 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h') === ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
+  toTuple (List [a1, a2, a3, a4, a5, a6, a7, a8]) = (a1, a2, a3, a4, a5, a6, a7, a8)
+
+instance ToTuple (NList 9 a) where
+  type Tuple (NList 9 a) = (a, a, a, a, a, a, a, a, a)
+  -- > toTuple (mk9 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i') === ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i')
+  toTuple (List [a1, a2, a3, a4, a5, a6, a7, a8, a9]) = (a1, a2, a3, a4, a5, a6, a7, a8, a9)
+
+instance ToTuple (NList 10 a) where
+  type Tuple (NList 10 a) = (a, a, a, a, a, a, a, a, a, a)
+  -- > toTuple (mk10 'a' 'b' 'c' 'd' 'e' 'f' 'g' 'h' 'i' 'j') === ('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')
+  toTuple (List [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10]) = (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
 
 instance (KnownNat n, Show a) => Show (NList n a) where
   showsPrec p (List xs) = showParen (p > 10) $
