@@ -7,12 +7,12 @@ let
   f = { mkDerivation, base, hspec, hspec-discover, stdenv }:
       mkDerivation {
         pname = "indexed-containers";
-        version = "0.1.0.0";
+        version = "0.1.0.2";
         src = ./.;
         libraryHaskellDepends = [ base ];
         testHaskellDepends = [ base hspec ];
         testToolDepends = [ hspec-discover ];
-        homepage = "https://github.com/zliu41/indexed-containers#readme";
+        homepage = "https://github.com/zliu41/indexed-containers";
         description = "Simple, no-frills indexed lists";
         license = stdenv.lib.licenses.bsd3;
       };

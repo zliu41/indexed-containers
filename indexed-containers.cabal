@@ -4,11 +4,11 @@ cabal-version:       2.4
 -- http://haskell.org/cabal/users-guide/
 
 name:                indexed-containers
-version:             0.1.0.1
+version:             0.1.0.2
 synopsis:            Simple, no-frills indexed lists.
 description:         If the lengths of your lists are known statically, using indexed lists improves type safety with no runtime overhead.
 category:            Data Structures
-homepage:            https://github.com/zliu41/indexed-containers#readme
+homepage:            https://github.com/zliu41/indexed-containers
 bug-reports:         https://github.com/zliu41/indexed-containers/issues
 author:              Ziyang Liu <free@cofree.io>
 maintainer:          Ziyang Liu <free@cofree.io>
@@ -16,8 +16,15 @@ copyright:           2020 Ziyang Liu
 license:             BSD-3-Clause
 license-file:        LICENSE
 build-type:          Simple
-extra-source-files:  CHANGELOG.md, README.md
 tested-with:         GHC==8.10.1, GHC==8.8.2, GHC==8.6.5, GHC==8.4.4
+
+extra-source-files:
+    CHANGELOG.md
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/zliu41/indexed-containers
 
 library
   exposed-modules:
